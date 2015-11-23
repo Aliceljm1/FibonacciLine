@@ -62,7 +62,7 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 
 		mX = 700;
 		mY = 350;
-
+		initFibonacciData();
 		setFocusable(true); // 设置焦点
 	}
 
@@ -130,7 +130,7 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 			RectF mArc = new RectF(fb.getBLeft(), fb.getBTop(), fb.getBRight(),
 					fb.getBBottom());
 			RectF arc=new RectF(fb.getLeft(), fb.getTop(), fb.getRight(), fb.getBBottom());
-			mCanvas.drawRect(arc, mPaint);
+			//mCanvas.drawRect(arc, mPaint);
 			//mCanvas.drawRect(mArc, mPaint);
 			mCanvas.drawArc(mArc, fb.getAngleB(), 90, false, mPaint);// 顺时针绘图
 		}
@@ -184,6 +184,7 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
 	}
+
 
 	/**
 	 * 当SurfaceView销毁的时候调用
