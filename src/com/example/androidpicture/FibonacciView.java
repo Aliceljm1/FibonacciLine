@@ -33,24 +33,15 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 
 	private Canvas mCanvas; // 声明一张画布
 
-	private Paint mPaint, qPaint; // 声明两只画笔
+	private Paint mPaint; // 声明两只画笔
 
-	private Path mPath, qPath, tPath; // 声明三条路径
-
-	private static int mX, mY; // 用于控制图形的坐标
-
-	// 分别 代表贝塞尔曲线的开始坐标,结束坐标,控制点坐标
-	private int qStartX, qStartY, qEndX, qEndY, qControlX, qCOntrolY;
-
-	private int screenW, screenH; // 用于屏幕的宽高
-
+	private static int mX, mY; //start point
 	private Thread mThread; // 声明一个线程
 
-	// flag用于线程的标识,xReturn用于标识图形坐标是否返回,cReturn用于标识贝塞尔曲线的控制点坐标是否返回
-	private boolean flag, xReturn, cReturn;
+	private boolean flag;
 	private HashMap<Integer, FB> fbMap;
-	private static int ARC_COUNT = 10;
-	private static int V_ONE = 10;
+	private static int ARC_COUNT = 7;
+	private static int V_ONE = 60;
 	
 
 	/**
@@ -62,15 +53,22 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 
 		mHolder = this.getHolder(); // 获得SurfaceHolder对象
 		mHolder.addCallback(this); // 添加状态监听
+		
 
+		
 		mPaint = new Paint(); // 创建一个画笔对象
-		mPaint.setColor(Color.WHITE); // 设置画笔的颜色为白色
+		mPaint.setColor(Color.BLACK); // 设置画笔的颜色为白色
 		mPaint.setStyle(Paint.Style.STROKE);
-		// 创建路径对象
-		mPath = new Path();
 
-		mX = 500;
-		mY = 250;
+		mX = 700;
+		mY = 350;
+
+		setFocusable(true); // 设置焦点
+	}
+
+	@SuppressLint("UseSparseArrays")
+	public void initFibonacciData()
+	{
 		int levelAngle = 180;
 		fbMap = new HashMap<Integer, FB>();
 		FB fb1 = new FB();
@@ -123,17 +121,16 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 
 			fbMap.put(i, fb);
 		}
-
-		setFocusable(true); // 设置焦点
-
 	}
-
+	
 	public void drawDoor(Canvas mCanvas) {
 		
 		for (int i = 1; i < ARC_COUNT; i++) {
 			FB fb = fbMap.get(i);
 			RectF mArc = new RectF(fb.getBLeft(), fb.getBTop(), fb.getBRight(),
 					fb.getBBottom());
+			RectF arc=new RectF(fb.getLeft(), fb.getTop(), fb.getRight(), fb.getBBottom());
+			mCanvas.drawRect(arc, mPaint);
 			//mCanvas.drawRect(mArc, mPaint);
 			mCanvas.drawArc(mArc, fb.getAngleB(), 90, false, mPaint);// 顺时针绘图
 		}
@@ -174,15 +171,8 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 	 */
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-
-		// 获得屏幕的宽和高
-		screenW = this.getWidth();
-		screenH = this.getHeight();
-
 		mThread = new Thread(this); // 创建线程对象
 		flag = true; // 设置线程标识为true
-		xReturn = false; // 设置图形坐标不返回
-		cReturn = false; // 设置贝塞尔曲线控制点坐标不返回
 		mThread.start(); // 启动线程
 
 	}
@@ -207,26 +197,10 @@ public class FibonacciView extends SurfaceView implements Runnable, Callback {
 	 * 自定义的绘图方法
 	 */
 	public void mDraw() {
-
 		mCanvas = mHolder.lockCanvas(); // 获得画布对象,开始对画布画画
-
-		mCanvas.drawColor(Color.MAGENTA); // 设置画布颜色为黑色
-
+		mCanvas.drawColor(Color.WHITE); // 设置画布颜色为黑色
 		drawDoor(mCanvas);
 		mHolder.unlockCanvasAndPost(mCanvas); // 把画布显示在屏幕上
-	}
-
-	public void drawF(Canvas mCanvas) {
-	}
-
-
-	/**
-	 * 当屏幕被触摸时调用
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-
-		return super.onTouchEvent(event);
 	}
 
 }
